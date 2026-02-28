@@ -171,13 +171,9 @@ struct GridTrackingView: NSViewRepresentable {
         let view = GridTrackingNSView()
         view.gridSize = gridSize
         view.onHover = { [weak interactionState] offset in
-            DispatchQueue.main.async {
-                guard let state = interactionState else { return }
-                if state.hoverTile != offset {
-                    state.hoverTile = offset
-                    onHoverChanged?(offset)
-                }
-            }
+            guard let state = interactionState, state.hoverTile != offset else { return }
+            state.hoverTile = offset
+            onHoverChanged?(offset)
         }
         view.onTap = onTap
         return view
@@ -187,13 +183,9 @@ struct GridTrackingView: NSViewRepresentable {
         nsView.gridSize = gridSize
         nsView.onTap = onTap
         nsView.onHover = { [weak interactionState] offset in
-            DispatchQueue.main.async {
-                guard let state = interactionState else { return }
-                if state.hoverTile != offset {
-                    state.hoverTile = offset
-                    onHoverChanged?(offset)
-                }
-            }
+            guard let state = interactionState, state.hoverTile != offset else { return }
+            state.hoverTile = offset
+            onHoverChanged?(offset)
         }
     }
 }
