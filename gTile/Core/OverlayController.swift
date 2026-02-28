@@ -274,6 +274,8 @@ final class OverlayController {
                     let selection = GridSelection(anchor: currentAnchor, target: cursor)
                     state.anchor = nil
                     state.keyboardCursor = nil
+                    // Set the selection on the overlay state so onUserAction(.confirm) can read it
+                    self.setSelection(selection, monitorIdx: index)
                     self.dispatch(.selection(
                         monitorIdx: index,
                         gridSize: self.gridSize,
