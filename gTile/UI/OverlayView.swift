@@ -12,8 +12,6 @@ struct OverlayView: View {
     var onHoverChanged: ((GridOffset?) -> Void)?
     let onAutotile: ((AutoTileLayout) -> Void)?
     let onClose: (() -> Void)?
-    let onToggleAutoClose: (() -> Void)?
-    let onToggleFollowCursor: (() -> Void)?
 
     var body: some View {
         VStack(spacing: 8) {
@@ -113,24 +111,6 @@ struct OverlayView: View {
             .help("Autotile: List + Main")
 
             Spacer()
-
-            Button {
-                onToggleFollowCursor?()
-            } label: {
-                Image(systemName: "cursorarrow.motionlines")
-                    .font(.system(size: 12))
-            }
-            .buttonStyle(.borderless)
-            .help("Follow Cursor")
-
-            Button {
-                onToggleAutoClose?()
-            } label: {
-                Image(systemName: "arrow.down.right.and.arrow.up.left")
-                    .font(.system(size: 12))
-            }
-            .buttonStyle(.borderless)
-            .help("Auto Close after placement")
         }
     }
 }

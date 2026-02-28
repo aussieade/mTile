@@ -32,10 +32,7 @@ struct GeneralSettingsTab: View {
     var body: some View {
         Form {
             Section("Behavior") {
-                Toggle("Auto-close overlay after placing window", isOn: $preferences.autoClose)
                 Toggle("Auto-maximize when selection fills grid", isOn: $preferences.autoMaximize)
-                Toggle("Follow cursor (place overlay at cursor)", isOn: $preferences.followCursor)
-                Toggle("Show grid lines preview", isOn: $preferences.showGridLines)
                 Toggle("Target presets to monitor of mouse", isOn: $preferences.targetPresetsToMonitorOfMouse)
             }
 

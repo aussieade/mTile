@@ -6,16 +6,8 @@ import SwiftUI
 final class UserPreferences {
     // MARK: - Boolean Settings
 
-    var autoClose: Bool {
-        didSet { UserDefaults.standard.set(autoClose, forKey: "autoClose") }
-    }
-
     var autoMaximize: Bool {
         didSet { UserDefaults.standard.set(autoMaximize, forKey: "autoMaximize") }
-    }
-
-    var followCursor: Bool {
-        didSet { UserDefaults.standard.set(followCursor, forKey: "followCursor") }
     }
 
     var globalAutoTiling: Bool {
@@ -28,10 +20,6 @@ final class UserPreferences {
 
     var moveResizeEnabled: Bool {
         didSet { UserDefaults.standard.set(moveResizeEnabled, forKey: "moveResizeEnabled") }
-    }
-
-    var showGridLines: Bool {
-        didSet { UserDefaults.standard.set(showGridLines, forKey: "showGridLines") }
     }
 
     var targetPresetsToMonitorOfMouse: Bool {
@@ -74,10 +62,6 @@ final class UserPreferences {
 
     var windowSpacing: Int {
         didSet { UserDefaults.standard.set(windowSpacing, forKey: "windowSpacing") }
-    }
-
-    var selectionTimeout: Int {
-        didSet { UserDefaults.standard.set(selectionTimeout, forKey: "selectionTimeout") }
     }
 
     // MARK: - String Settings
@@ -147,13 +131,10 @@ final class UserPreferences {
 
         // Register defaults
         let defaultValues: [String: Any] = [
-            "autoClose": true,
             "autoMaximize": false,
-            "followCursor": false,
             "globalAutoTiling": false,
             "globalPresets": true,
             "moveResizeEnabled": true,
-            "showGridLines": false,
             "targetPresetsToMonitorOfMouse": false,
             "insetsPrimaryTop": 0,
             "insetsPrimaryRight": 0,
@@ -164,7 +145,6 @@ final class UserPreferences {
             "insetsSecondaryBottom": 0,
             "insetsSecondaryLeft": 0,
             "windowSpacing": 0,
-            "selectionTimeout": 600,
             "gridSizes": "8x6, 6x4, 4x4",
             "autotileMainWindowRatios": "0.5,0.6,0.65,0.7",
         ]
@@ -194,13 +174,10 @@ final class UserPreferences {
         defaults.register(defaults: mutableDefaults)
 
         // Load values
-        self.autoClose = defaults.bool(forKey: "autoClose")
         self.autoMaximize = defaults.bool(forKey: "autoMaximize")
-        self.followCursor = defaults.bool(forKey: "followCursor")
         self.globalAutoTiling = defaults.bool(forKey: "globalAutoTiling")
         self.globalPresets = defaults.bool(forKey: "globalPresets")
         self.moveResizeEnabled = defaults.bool(forKey: "moveResizeEnabled")
-        self.showGridLines = defaults.bool(forKey: "showGridLines")
         self.targetPresetsToMonitorOfMouse = defaults.bool(forKey: "targetPresetsToMonitorOfMouse")
 
         self.insetsPrimaryTop = defaults.integer(forKey: "insetsPrimaryTop")
@@ -212,7 +189,6 @@ final class UserPreferences {
         self.insetsSecondaryBottom = defaults.integer(forKey: "insetsSecondaryBottom")
         self.insetsSecondaryLeft = defaults.integer(forKey: "insetsSecondaryLeft")
         self.windowSpacing = defaults.integer(forKey: "windowSpacing")
-        self.selectionTimeout = defaults.integer(forKey: "selectionTimeout")
 
         self.gridSizes = defaults.string(forKey: "gridSizes") ?? "8x6, 6x4, 4x4"
         self.autotileMainWindowRatios = defaults.string(forKey: "autotileMainWindowRatios") ?? "0.5,0.6,0.65,0.7"

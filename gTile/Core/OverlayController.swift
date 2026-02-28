@@ -356,12 +356,6 @@ final class OverlayController {
             },
             onClose: { [weak self] in
                 self?.toggleOverlays(hide: true)
-            },
-            onToggleAutoClose: { [weak self] in
-                self?.preferences.autoClose.toggle()
-            },
-            onToggleFollowCursor: { [weak self] in
-                self?.preferences.followCursor.toggle()
             }
         )
     }
