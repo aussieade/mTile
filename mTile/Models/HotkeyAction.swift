@@ -20,10 +20,10 @@ enum AutoTileLayout: Equatable {
 /// A data structure that comprises a discriminative action and associated meta information.
 /// Replaces the TypeScript discriminated union HotkeyAction.
 enum HotkeyAction {
-    /// Toggle gTile overlay.
+    /// Toggle mTile overlay.
     case toggle
 
-    /// Close the gTile overlay and abort the current operation, if any.
+    /// Close the mTile overlay and abort the current operation, if any.
     case cancel
 
     /// Apply the previewed window placement.

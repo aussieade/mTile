@@ -8,7 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let trusted = AccessibilityService.isTrusted
         if !trusted {
             AccessibilityService.requestPermission()
-            print("gTile: Accessibility permission not yet granted. Please grant access in System Settings.")
+            print("mTile: Accessibility permission not yet granted. Please grant access in System Settings.")
         }
 
         // Create the app coordinator

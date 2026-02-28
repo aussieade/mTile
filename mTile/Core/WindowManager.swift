@@ -93,7 +93,7 @@ final class WindowManager {
     ) {
         let targetTitle = accessibilityService.windowTitle(target) ?? "<no title>"
         let currentFrame = accessibilityService.windowFrame(target)
-        print("gTile: applySelection target='\(targetTitle)' grid=\(gridSize.cols)x\(gridSize.rows) sel=\(selection.anchor.col),\(selection.anchor.row)->\(selection.target.col),\(selection.target.row) monitor=\(monitorIdx) currentFrame=\(String(describing: currentFrame))")
+        print("mTile: applySelection target='\(targetTitle)' grid=\(gridSize.cols)x\(gridSize.rows) sel=\(selection.anchor.col),\(selection.anchor.row)->\(selection.target.col),\(selection.target.row) monitor=\(monitorIdx) currentFrame=\(String(describing: currentFrame))")
 
         let gridArea = gridSize.cols * gridSize.rows
         let selectionArea =

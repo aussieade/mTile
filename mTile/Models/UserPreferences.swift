@@ -149,7 +149,7 @@ final class UserPreferences {
             "autotileMainWindowRatios": "0.5,0.6,0.65,0.7",
         ]
 
-        // Default resize presets matching gTile defaults
+        // Default resize presets matching mTile defaults
         let defaultResizePresets = [
             "4x4 1:3 2:4, 1:2 3:4, 1:1 4:4, 1:4 1:4",     // 1
             "4x4 1:3 4:4,1:2 4:4,1:1 4:4,1:4 4:4",         // 2

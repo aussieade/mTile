@@ -23,6 +23,6 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSAccessibilityUsageDescription</key>
-	<string>gTile needs accessibility access to move and resize windows.</string>
+	<string>mTile needs accessibility access to move and resize windows.</string>
 </dict>
 </plist>

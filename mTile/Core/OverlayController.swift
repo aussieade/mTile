@@ -9,7 +9,7 @@ enum OverlayEvent {
     case visibility(visible: Bool)
 }
 
-/// Responsible for rendering the gTile overlay on each connected monitor.
+/// Responsible for rendering the mTile overlay on each connected monitor.
 ///
 /// Port of OverlayManager.ts.
 final class OverlayController {
@@ -112,13 +112,13 @@ final class OverlayController {
         if let tw = targetWindow {
             targetWindowPID = windowManager.accessibilityService.windowPID(tw)
             let title = windowManager.accessibilityService.windowTitle(tw) ?? "<no title>"
-            print("gTile: captured targetWindow: '\(title)' PID=\(targetWindowPID)")
+            print("mTile: captured targetWindow: '\(title)' PID=\(targetWindowPID)")
         } else {
             targetWindowPID = 0
-            print("gTile: WARNING - no target window captured!")
+            print("mTile: WARNING - no target window captured!")
             // Debug: what does frontmostApplication report?
             if let app = NSWorkspace.shared.frontmostApplication {
-                print("gTile:   frontmostApp='\(app.localizedName ?? "?")' pid=\(app.processIdentifier) myPID=\(ProcessInfo.processInfo.processIdentifier)")
+                print("mTile:   frontmostApp='\(app.localizedName ?? "?")' pid=\(app.processIdentifier) myPID=\(ProcessInfo.processInfo.processIdentifier)")
             }
         }
 
@@ -330,7 +330,7 @@ final class OverlayController {
 
         let focusedTitle = windowManager.focusedWindow.flatMap {
             windowManager.accessibilityService.windowTitle($0)
-        } ?? "gTile"
+        } ?? "mTile"
 
         return OverlayView(
             title: focusedTitle,

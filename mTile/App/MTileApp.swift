@@ -1,11 +1,11 @@
 import SwiftUI
 
 @main
-struct GTileApp: App {
+struct MTileApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        MenuBarExtra("gTile", systemImage: "square.grid.3x3") {
+        MenuBarExtra("mTile", systemImage: "square.grid.3x3") {
             MenuBarView()
         }
         .menuBarExtraStyle(.menu)

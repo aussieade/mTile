@@ -3,7 +3,7 @@ import AppKit
 /// Type alias for the preset cycling index.
 typealias PresetIndex = (index: Int, subindex: Int)
 
-/// Top-level orchestrator for the gTile macOS app.
+/// Top-level orchestrator for the mTile macOS app.
 ///
 /// Port of App.ts. Routes HotkeyAction events to WindowManager and
 /// OverlayController, manages preset cycling, autotile layout resolution.
@@ -151,19 +151,19 @@ final class AppCoordinator {
         let validated = om.validatedTargetWindow()
         let fallback = wm.accessibilityService.focusedWindowExcludingSelf()
         guard let window = validated ?? fallback else {
-            print("gTile: no target window available for action \(action)")
+            print("mTile: no target window available for action \(action)")
             return
         }
 
         // Final safety check: never manipulate our own process windows
         let windowPID = wm.accessibilityService.windowPID(window)
         guard windowPID != ProcessInfo.processInfo.processIdentifier else {
-            print("gTile: BUG - target is own process, blocking action")
+            print("mTile: BUG - target is own process, blocking action")
             return
         }
 
         let windowTitle = wm.accessibilityService.windowTitle(window) ?? "<no title>"
-        print("gTile: action=\(action) target='\(windowTitle)' PID=\(windowPID) (validated=\(validated != nil), fallback=\(fallback != nil))")
+        print("mTile: action=\(action) target='\(windowTitle)' PID=\(windowPID) (validated=\(validated != nil), fallback=\(fallback != nil))")
 
         let monitorIdx = om.activeMonitorIndex ?? accessibilityService.windowMonitorIndex(window)
         let selection = om.getSelection(monitorIdx)

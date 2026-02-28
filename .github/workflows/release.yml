@@ -23,8 +23,8 @@ jobs:
       - name: Build release
         run: |
           xcodebuild \
-            -project gTile.xcodeproj \
-            -scheme gTile \
+            -project mTile.xcodeproj \
+            -scheme mTile \
             -configuration Release \
             -derivedDataPath build \
             CODE_SIGN_IDENTITY="-" \
@@ -35,16 +35,16 @@ jobs:
       - name: Package DMG
         run: |
           mkdir -p build/dmg-staging
-          cp -r build/Build/Products/Release/gTile.app build/dmg-staging/
+          cp -r build/Build/Products/Release/mTile.app build/dmg-staging/
           ln -s /Applications build/dmg-staging/Applications
           hdiutil create \
-            -volname "gTile" \
+            -volname "mTile" \
             -srcfolder build/dmg-staging \
             -ov -format UDZO \
-            build/gTile.dmg
+            build/mTile.dmg
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: build/gTile.dmg
+          files: build/mTile.dmg
           generate_release_notes: true

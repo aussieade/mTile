@@ -136,7 +136,7 @@ final class HotkeyManager {
         let keyCode: UInt32 = 5 // G
 
         var hotKeyID = EventHotKeyID()
-        hotKeyID.signature = OSType(0x6754696C) // "gTil"
+        hotKeyID.signature = OSType(0x6D54696C) // "mTil"
         hotKeyID.id = 1
 
         var eventType = EventTypeSpec()

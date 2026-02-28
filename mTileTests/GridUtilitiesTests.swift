@@ -1,5 +1,5 @@
 import XCTest
-@testable import gTile
+@testable import mTile
 
 final class GridUtilitiesTests: XCTestCase {
 

@@ -80,7 +80,7 @@ final class AccessibilityService {
         var pid: pid_t = 0
         AXUIElementGetPid(window, &pid)
         guard pid != ProcessInfo.processInfo.processIdentifier else {
-            print("gTile: BUG - attempted to resize own window (PID \(pid))")
+            print("mTile: BUG - attempted to resize own window (PID \(pid))")
             return
         }
 

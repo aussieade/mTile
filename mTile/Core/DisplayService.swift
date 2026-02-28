@@ -1,6 +1,6 @@
 import AppKit
 
-/// Abstraction that represents monitor settings, analogous to gTile's Screen type.
+/// Abstraction that represents monitor settings, analogous to mTile's Screen type.
 struct Screen {
     let index: Int
     let scale: CGFloat

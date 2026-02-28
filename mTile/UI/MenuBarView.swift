@@ -30,7 +30,7 @@ struct MenuBarView: View {
 
         Divider()
 
-        Button("Quit gTile") {
+        Button("Quit mTile") {
             NSApplication.shared.terminate(nil)
         }
         .keyboardShortcut("q")

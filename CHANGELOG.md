@@ -29,7 +29,7 @@
 ## [v1.0.0] - 2026-02-28
 
 ### Added
-- Initial release: full port of gTile GNOME extension to native macOS
+- Initial release: full port of mTile GNOME extension to native macOS
 - Grid-based window tiling via menu bar overlay
 - 8-phase implementation: models, parsers, platform services, window management, overlay UI, hotkey management, overlay controller, app orchestration
 - Configurable grid sizes, resize presets, autotile layouts

@@ -10,8 +10,8 @@ xcodegen generate
 
 echo "==> Building release..."
 xcodebuild \
-  -project "$PROJECT/gTile.xcodeproj" \
-  -scheme gTile \
+  -project "$PROJECT/mTile.xcodeproj" \
+  -scheme mTile \
   -configuration Release \
   -derivedDataPath "$BUILD" \
   CODE_SIGN_IDENTITY="-" \
@@ -22,16 +22,16 @@ xcodebuild \
 echo "==> Packaging DMG..."
 rm -rf "$BUILD/dmg-staging"
 mkdir -p "$BUILD/dmg-staging"
-cp -r "$BUILD/Build/Products/Release/gTile.app" "$BUILD/dmg-staging/"
+cp -r "$BUILD/Build/Products/Release/mTile.app" "$BUILD/dmg-staging/"
 ln -s /Applications "$BUILD/dmg-staging/Applications"
 
 hdiutil create \
-  -volname "gTile" \
+  -volname "mTile" \
   -srcfolder "$BUILD/dmg-staging" \
   -ov -format UDZO \
-  "$BUILD/gTile.dmg"
+  "$BUILD/mTile.dmg"
 
 rm -rf "$BUILD/dmg-staging"
 
 echo ""
-echo "Done: $BUILD/gTile.dmg"
+echo "Done: $BUILD/mTile.dmg"

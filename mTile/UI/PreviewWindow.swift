@@ -2,7 +2,7 @@ import AppKit
 
 /// Semi-transparent NSPanel that shows a preview of where the window will be placed.
 ///
-/// This is the macOS equivalent of gTile's Preview UI component.
+/// This is the macOS equivalent of mTile's Preview UI component.
 final class PreviewWindow: NSPanel {
     private let previewView: NSView
 
