@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.2.0] - 2026-02-28
+
+### Added
+- Shift+Arrow to expand selection from current cursor without needing Enter first (like text selection in editors)
+
 ## [v1.1.0] - 2026-02-28
 
 ### Added
