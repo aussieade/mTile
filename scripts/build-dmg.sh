@@ -16,8 +16,8 @@ xcodebuild \
   -destination "generic/platform=macOS" \
   -derivedDataPath "$BUILD" \
   CODE_SIGN_IDENTITY="-" \
-  CODE_SIGNING_REQUIRED=NO \
-  CODE_SIGNING_ALLOWED=NO \
+  CODE_SIGNING_REQUIRED=YES \
+  CODE_SIGNING_ALLOWED=YES \
   build | tail -5
 
 echo "==> Packaging DMG..."

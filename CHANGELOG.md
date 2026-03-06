@@ -8,6 +8,7 @@
 
 ### Fixed
 - Release DMG build now targets generic macOS, producing a universal (`x86_64` + `arm64`) app binary
+- Release builds now produce a proper ad-hoc signed app bundle (stable bundle identifier/code identity for macOS permissions)
 - Release workflow now verifies built app architectures before packaging
 
 ### Improved
