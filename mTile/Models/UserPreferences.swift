@@ -26,6 +26,10 @@ final class UserPreferences {
         didSet { UserDefaults.standard.set(targetPresetsToMonitorOfMouse, forKey: "targetPresetsToMonitorOfMouse") }
     }
 
+    var launchAtLogin: Bool {
+        didSet { UserDefaults.standard.set(launchAtLogin, forKey: "launchAtLogin") }
+    }
+
     // MARK: - Numeric Settings
 
     var insetsPrimaryTop: Int {
@@ -136,6 +140,7 @@ final class UserPreferences {
             "globalPresets": true,
             "moveResizeEnabled": true,
             "targetPresetsToMonitorOfMouse": false,
+            "launchAtLogin": false,
             "insetsPrimaryTop": 0,
             "insetsPrimaryRight": 0,
             "insetsPrimaryBottom": 0,
@@ -179,6 +184,7 @@ final class UserPreferences {
         self.globalPresets = defaults.bool(forKey: "globalPresets")
         self.moveResizeEnabled = defaults.bool(forKey: "moveResizeEnabled")
         self.targetPresetsToMonitorOfMouse = defaults.bool(forKey: "targetPresetsToMonitorOfMouse")
+        self.launchAtLogin = defaults.bool(forKey: "launchAtLogin")
 
         self.insetsPrimaryTop = defaults.integer(forKey: "insetsPrimaryTop")
         self.insetsPrimaryRight = defaults.integer(forKey: "insetsPrimaryRight")

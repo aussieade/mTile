@@ -15,6 +15,7 @@
 		45834774079015FED52CD44B /* UserPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = D84064A9CF50790FEC97D091 /* UserPreferences.swift */; };
 		5891095A9BC9D6126D278D0B /* GridTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E608E1600F00AF838CADB5E /* GridTypes.swift */; };
 		69862BE25574EF482AEE81EA /* GridSizeListParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B98397D83A611D835CD499 /* GridSizeListParser.swift */; };
+		6FF94573F7B9909E86DE1397 /* LoginItemService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44C06A388467E13BC870F4C /* LoginItemService.swift */; };
 		741DCE52624F600F3493FAB7 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD474D3F9332FBED96077E1D /* ParserTests.swift */; };
 		79800DEB3BD6A5FB19C31771 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E72F1B189AFA018AD7DC603 /* AppCoordinator.swift */; };
 		803C815AB446892B5058CEE1 /* GridUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FC7BB07E57EAD290313AE4 /* GridUtilities.swift */; };
@@ -69,6 +70,7 @@
 		8E608E1600F00AF838CADB5E /* GridTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridTypes.swift; sourceTree = "<group>"; };
 		BA91B3E39F5C3F0B00863FE9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BC2B25375CC65C81170A90F2 /* GridUtilitiesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridUtilitiesTests.swift; sourceTree = "<group>"; };
+		C44C06A388467E13BC870F4C /* LoginItemService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginItemService.swift; sourceTree = "<group>"; };
 		C680B92EB183D5213ECA9B35 /* GridSpecParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridSpecParser.swift; sourceTree = "<group>"; };
 		D5B98397D83A611D835CD499 /* GridSizeListParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridSizeListParser.swift; sourceTree = "<group>"; };
 		D84064A9CF50790FEC97D091 /* UserPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPreferences.swift; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 				89B3E4F6DC111B70D684BA9F /* AccessibilityService.swift */,
 				F0D40415927B69D8EDC2A316 /* DisplayService.swift */,
 				E865C76A5902C598B00797FC /* HotkeyManager.swift */,
+				C44C06A388467E13BC870F4C /* LoginItemService.swift */,
 				78328939CED33DBADEC9CDDA /* OverlayController.swift */,
 				15D86D81E44330C96B3A1C17 /* WindowManager.swift */,
 			);
@@ -319,6 +322,7 @@
 				EB3BB9C45CCE4D8E2646F440 /* GridView.swift in Sources */,
 				27D2379B56386D77EB52ADD0 /* HotkeyAction.swift in Sources */,
 				FA82A80DCF260666BDC09402 /* HotkeyManager.swift in Sources */,
+				6FF94573F7B9909E86DE1397 /* LoginItemService.swift in Sources */,
 				C1A7FE0B4A54AB5B7EDE1EBD /* MTileApp.swift in Sources */,
 				1FF6602D1A46A7787FDD241C /* MenuBarView.swift in Sources */,
 				EF45686E2F7002349E937D2A /* OverlayController.swift in Sources */,

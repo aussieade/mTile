@@ -34,6 +34,7 @@ struct GeneralSettingsTab: View {
             Section("Behavior") {
                 Toggle("Auto-maximize when selection fills grid", isOn: $preferences.autoMaximize)
                 Toggle("Target presets to monitor of mouse", isOn: $preferences.targetPresetsToMonitorOfMouse)
+                Toggle("Launch mTile at login", isOn: $preferences.launchAtLogin)
             }
 
             Section("Window Spacing") {
@@ -61,6 +62,13 @@ struct GeneralSettingsTab: View {
         }
         .formStyle(.grouped)
         .padding()
+        .onChange(of: preferences.launchAtLogin) { _, newValue in
+            let applied = LoginItemService.shared.setEnabled(newValue)
+            if !applied {
+                // Roll back UI + persisted setting when registration fails.
+                preferences.launchAtLogin = LoginItemService.shared.isEnabled
+            }
+        }
     }
 }
 

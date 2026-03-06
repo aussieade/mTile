@@ -1,5 +1,5 @@
 #!/bin/zsh
-set -e
+set -euo pipefail
 
 PROJECT="$(cd "$(dirname "$0")/.." && pwd)"
 BUILD="$PROJECT/build"
@@ -13,6 +13,7 @@ xcodebuild \
   -project "$PROJECT/mTile.xcodeproj" \
   -scheme mTile \
   -configuration Release \
+  -destination "generic/platform=macOS" \
   -derivedDataPath "$BUILD" \
   CODE_SIGN_IDENTITY="-" \
   CODE_SIGNING_REQUIRED=NO \
@@ -20,9 +21,19 @@ xcodebuild \
   build | tail -5
 
 echo "==> Packaging DMG..."
+APP="$BUILD/Build/Products/Release/mTile.app"
+
+if [[ ! -d "$APP" ]]; then
+  echo "Build product not found at: $APP"
+  exit 1
+fi
+
+echo "==> Verifying app architectures..."
+lipo -info "$APP/Contents/MacOS/mTile"
+
 rm -rf "$BUILD/dmg-staging"
 mkdir -p "$BUILD/dmg-staging"
-cp -r "$BUILD/Build/Products/Release/mTile.app" "$BUILD/dmg-staging/"
+cp -r "$APP" "$BUILD/dmg-staging/"
 ln -s /Applications "$BUILD/dmg-staging/Applications"
 
 hdiutil create \

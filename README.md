@@ -28,6 +28,10 @@ xcodegen generate
 
 You'll need to grant accessibility permissions when prompted.
 
+To start mTile automatically on login:
+- Open `mTile -> Settings -> General` and enable `Launch mTile at login`, or
+- Use macOS `System Settings -> General -> Login Items`.
+
 ## Building from source
 
 Requires Xcode and [XcodeGen](https://github.com/yonaskolb/XcodeGen).

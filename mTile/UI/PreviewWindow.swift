@@ -5,6 +5,7 @@ import AppKit
 /// This is the macOS equivalent of mTile's Preview UI component.
 final class PreviewWindow: NSPanel {
     private let previewView: NSView
+    private let animateTransitions = false
 
     init() {
         let initialFrame = NSRect(x: 0, y: 0, width: 100, height: 100)
@@ -43,6 +44,8 @@ final class PreviewWindow: NSPanel {
     /// Pass nil to hide the preview.
     var previewArea: Rectangle? {
         didSet {
+            if previewArea == oldValue { return }
+
             if let area = previewArea {
                 let primaryHeight = NSScreen.screens.first?.frame.height ?? 0
                 let nsY = primaryHeight - area.y - area.height
@@ -52,11 +55,30 @@ final class PreviewWindow: NSPanel {
                     width: area.width, height: area.height
                 )
 
-                setFrame(frame, display: true, animate: true)
-                orderFrontRegardless()
+                // Avoid unnecessary frame work when the requested frame is
+                // effectively unchanged (e.g., repeated key presses at bounds).
+                if !framesApproximatelyEqual(self.frame, frame) {
+                    setFrame(frame, display: true, animate: animateTransitions)
+                }
+                if !isVisible {
+                    orderFrontRegardless()
+                }
             } else {
-                orderOut(nil)
+                if isVisible {
+                    orderOut(nil)
+                }
             }
         }
+    }
+
+    private func framesApproximatelyEqual(
+        _ lhs: NSRect,
+        _ rhs: NSRect,
+        epsilon: CGFloat = 0.5
+    ) -> Bool {
+        abs(lhs.origin.x - rhs.origin.x) <= epsilon &&
+        abs(lhs.origin.y - rhs.origin.y) <= epsilon &&
+        abs(lhs.size.width - rhs.size.width) <= epsilon &&
+        abs(lhs.size.height - rhs.size.height) <= epsilon
     }
 }

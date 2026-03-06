@@ -41,6 +41,9 @@ final class AppCoordinator {
         self.lastPresetIndex = VolatileStorage<PresetIndex>(lifetime: 2.0)
         self.gridSpecs = AutoTileLayoutCache(preferences: preferences)
 
+        // Keep OS login item registration in sync with persisted preference.
+        LoginItemService.shared.synchronize(enabled: preferences.launchAtLogin)
+
         // Determine global keybinding groups from preferences
         var groups: KeyBindingGroup = .global
         if preferences.globalAutoTiling { groups.insert(.autotile) }

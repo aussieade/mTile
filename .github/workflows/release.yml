@@ -26,14 +26,20 @@ jobs:
             -project mTile.xcodeproj \
             -scheme mTile \
             -configuration Release \
+            -destination "generic/platform=macOS" \
             -derivedDataPath build \
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
             build
 
+      - name: Verify app architectures
+        run: |
+          lipo -info build/Build/Products/Release/mTile.app/Contents/MacOS/mTile
+
       - name: Package DMG
         run: |
+          rm -rf build/dmg-staging
           mkdir -p build/dmg-staging
           cp -r build/Build/Products/Release/mTile.app build/dmg-staging/
           ln -s /Applications build/dmg-staging/Applications

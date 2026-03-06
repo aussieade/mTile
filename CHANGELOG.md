@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.3.0] - 2026-03-06
+
+### Added
+- Launch-at-login support in Settings (`General -> Launch mTile at login`)
+- Startup synchronization of login-item registration with the saved preference
+
+### Fixed
+- Release DMG build now targets generic macOS, producing a universal (`x86_64` + `arm64`) app binary
+- Release workflow now verifies built app architectures before packaging
+
+### Improved
+- Faster selection movement by removing preview-window animation during high-frequency updates
+- Reduced redundant overlay refresh work when selection state is unchanged
+
 ## [v1.2.0] - 2026-02-28
 
 ### Added

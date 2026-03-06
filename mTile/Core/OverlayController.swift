@@ -139,6 +139,12 @@ final class OverlayController {
 
     func setSelection(_ selection: GridSelection?, monitorIdx: Int) {
         guard monitorIdx < overlayStates.count else { return }
+
+        // Avoid rebuilding overlay content when nothing semantically changed.
+        if overlayStates[monitorIdx].selection == selection {
+            return
+        }
+
         overlayStates[monitorIdx].selection = selection
 
         if let selection = selection {
