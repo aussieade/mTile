@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.3.0] - 2026-03-06
+## [v1.5.0] - 2026-03-06
 
 ### Added
 - Launch-at-login support in Settings (`General -> Launch mTile at login`)
@@ -14,6 +14,7 @@
 ### Improved
 - Faster selection movement by removing preview-window animation during high-frequency updates
 - Reduced redundant overlay refresh work when selection state is unchanged
+- Keyboard-driven selection no longer starts at top-left by default; initial cursor now seeds from the target window's current grid fit
 
 ## [v1.2.0] - 2026-02-28
 

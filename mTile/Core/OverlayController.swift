@@ -124,11 +124,6 @@ final class OverlayController {
 
         placeOverlays()
 
-        // Initialize keyboard cursor at top-left
-        for state in interactionStates {
-            state.keyboardCursor = GridOffset(col: 0, row: 0)
-        }
-
         syncInProgress = true
         overlays.forEach { $0.show() }
         // Make the first overlay key so it receives keyboard events
@@ -247,7 +242,7 @@ final class OverlayController {
                 } else if shiftHeld {
                     // Shift+Arrow: expand selection from current cursor.
                     // If no anchor yet, plant it at current cursor position first.
-                    let cur = state.keyboardCursor ?? GridOffset(col: 0, row: 0)
+                    let cur = state.keyboardCursor ?? self.initialKeyboardCursor(for: index)
                     if state.anchor == nil {
                         state.anchor = cur
                     }
@@ -256,7 +251,7 @@ final class OverlayController {
                     state.keyboardCursor = GridOffset(col: newCol, row: newRow)
                 } else {
                     // Plain arrow: move cursor only
-                    let cur = state.keyboardCursor ?? GridOffset(col: 0, row: 0)
+                    let cur = state.keyboardCursor ?? self.initialKeyboardCursor(for: index)
                     let newCol = min(max(cur.col + dCol, 0), maxCol)
                     let newRow = min(max(cur.row + dRow, 0), maxRow)
                     state.keyboardCursor = GridOffset(col: newCol, row: newRow)
@@ -274,7 +269,7 @@ final class OverlayController {
             // Wire Enter key — same as clicking the current keyboard cursor
             controller.window.onEnter = { [weak self, weak interactionState] in
                 guard let self = self, let state = interactionState else { return }
-                let cursor = state.keyboardCursor ?? GridOffset(col: 0, row: 0)
+                let cursor = state.keyboardCursor ?? self.initialKeyboardCursor(for: index)
                 if let currentAnchor = state.anchor {
                     // Second Enter: confirm selection
                     let selection = GridSelection(anchor: currentAnchor, target: cursor)
@@ -418,6 +413,21 @@ final class OverlayController {
         for i in 0..<overlays.count {
             refreshOverlay(at: i)
         }
+    }
+
+    /// Matches gTile's "no forced top-left start" behavior by seeding keyboard
+    /// actions from the target window's current grid fit (NW corner) when possible.
+    private func initialKeyboardCursor(for monitorIdx: Int) -> GridOffset {
+        guard let window = validatedTargetWindow(),
+              windowManager.accessibilityService.windowMonitorIndex(window) == monitorIdx else {
+            return GridOffset(col: 0, row: 0)
+        }
+
+        let fit = windowManager.windowToSelection(window, gridSize: gridSize)
+        return GridOffset(
+            col: min(fit.anchor.col, fit.target.col),
+            row: min(fit.anchor.row, fit.target.row)
+        )
     }
 }
 
