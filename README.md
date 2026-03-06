@@ -4,7 +4,9 @@ A mostly vibecoded port of [gTile](https://github.com/gTile/gTile) to macOS. gTi
 
 This brings the core grid-tiling workflow of gTile to macOS as a native Swift app.
 
-<video src="docs/demo.mp4" controls width="100%"></video>
+[![mTile demo screenshot](docs/demo-screenshot.png)](https://raw.githubusercontent.com/protortyp/gTile-macos/develop/docs/demo.mp4)
+
+<sub>Click the screenshot to open the short demo video (MP4).</sub>
 
 ## Features
 
@@ -13,7 +15,6 @@ This brings the core grid-tiling workflow of gTile to macOS as a native Swift ap
 - Arrow keys to navigate, Enter to select, Shift+Arrow to expand selection
 - Option+Arrow to shift the entire selection around
 - Configurable grid sizes (e.g. 8x6, 6x4, 4x4)
-- Autotile actions (Main and Main-Inverted layouts)
 - Window spacing and monitor insets
 - Launch at login toggle in Settings
 - Lives in your menu bar, stays out of the way

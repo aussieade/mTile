@@ -8,17 +8,15 @@ struct KeyBindingGroup: OptionSet {
 
     static let global   = KeyBindingGroup(rawValue: 1 << 0)
     static let overlay  = KeyBindingGroup(rawValue: 1 << 1)
-    static let autotile = KeyBindingGroup(rawValue: 1 << 2)
-    static let action   = KeyBindingGroup(rawValue: 1 << 3)
-    static let preset   = KeyBindingGroup(rawValue: 1 << 4)
+    static let action   = KeyBindingGroup(rawValue: 1 << 2)
+    static let preset   = KeyBindingGroup(rawValue: 1 << 3)
 
     /// Default groups active when the overlay is shown.
-    static let overlayDefaults: KeyBindingGroup = [.overlay, .autotile, .preset]
+    static let overlayDefaults: KeyBindingGroup = [.overlay, .preset]
 }
 
 /// Maps preference keys to their keybinding groups for "always active" toggles.
 let settingKeyToKeyBindingGroup: [(key: String, group: KeyBindingGroup)] = [
-    ("globalAutoTiling", .autotile),
     ("globalPresets", .preset),
     ("moveResizeEnabled", .action),
 ]
@@ -92,16 +90,7 @@ final class HotkeyManager {
         register("setTiling", action: .confirm, group: .overlay)
         register("snapToNeighbors", action: .grow, group: .overlay)
 
-        // Autotile
-        register("autotileMain", action: .autotile(.main), group: .autotile)
-        register("autotileMainInverted", action: .autotile(.mainInverted), group: .autotile)
-        for i in 1...10 {
-            register("autotile\(i)", action: .autotile(.cols(i)), group: .autotile)
-        }
-
         // Action
-        register("actionAutotileMain", action: .autotile(.main), group: .action)
-        register("actionAutotileMainInverted", action: .autotile(.mainInverted), group: .action)
         register("actionChangeTiling", action: .loopGridSize, group: .action)
         register("actionContractTop", action: .resize(mode: .shrink, dir: .north), group: .action)
         register("actionContractRight", action: .resize(mode: .shrink, dir: .east), group: .action)

@@ -1,14 +1,6 @@
 import AppKit
 import ApplicationServices
 
-/// Axis for grid spec subdivision.
-enum Axis: String {
-    case x, y
-}
-
-/// Splits computed gridspec cell areas into non-dynamic and dynamic cells.
-typealias GridSpecAreas = (dedicated: [Rectangle], dynamic: [Rectangle], dynamicAxes: [Axis])
-
 /// Binary tree node used in the autogrow algorithm.
 final class TreeNode<T> {
     let data: T
@@ -245,86 +237,6 @@ final class WindowManager {
         fit(target, rect: best)
     }
 
-    /// Applies a GridSpec to the targeted monitor.
-    func autotile(_ spec: GridSpec, monitorIdx: Int) {
-        let (dedicated, dynamic, dynamicAxis) = gridSpecToAreas(spec)
-        let wa = workArea(monitorIdx)
-
-        // Get windows on this monitor
-        var windows: [(window: AXUIElement, hasFocus: Bool)] = []
-        let focused = focusedWindow
-
-        for (win, _) in accessibilityService.allWindows() {
-            if accessibilityService.isMinimized(win) { continue }
-            let winMonitor = accessibilityService.windowMonitorIndex(win)
-            if winMonitor != monitorIdx { continue }
-
-            let isFocused = focused.map { CFEqual($0, win) } ?? false
-            windows.append((win, isFocused))
-        }
-
-        // Sort: focused window first
-        windows.sort { w1, w2 in
-            if w1.hasFocus { return true }
-            if w2.hasFocus { return false }
-            return false
-        }
-
-        let project = { (rect: Rectangle, canvas: Rectangle) -> Rectangle in
-            Rectangle(
-                x: canvas.x + canvas.width * rect.x,
-                y: canvas.y + canvas.height * rect.y,
-                width: canvas.width * rect.width,
-                height: canvas.height * rect.height
-            )
-        }
-
-        var mutableDedicated = dedicated
-        var windowList = windows
-
-        // Place focused window in the largest dedicated area
-        let focusedIdx = windowList.firstIndex { $0.hasFocus }
-        if let focusedIdx = focusedIdx, !mutableDedicated.isEmpty {
-            var largestIdx = 0
-            var largestArea = 0.0
-            for (idx, rect) in mutableDedicated.enumerated() {
-                let area = rect.width * rect.height
-                if area > largestArea {
-                    largestIdx = idx
-                    largestArea = area
-                }
-            }
-
-            let projectedArea = project(mutableDedicated[largestIdx], wa)
-            fit(windowList[focusedIdx].window, rect: projectedArea)
-
-            windowList.remove(at: focusedIdx)
-            mutableDedicated.remove(at: largestIdx)
-        }
-
-        // Place windows in regular cells
-        let regularCount = min(mutableDedicated.count, windowList.count)
-        for i in 0..<regularCount {
-            fit(windowList[i].window, rect: project(mutableDedicated[i], wa))
-        }
-
-        // Fit remaining windows in dynamic cells
-        let remaining = Array(windowList.dropFirst(mutableDedicated.count))
-        for i in 0..<dynamic.count {
-            let mustFitAtLeastN = remaining.count / dynamic.count
-            let mustTakeOverflow = i < (remaining.count % dynamic.count)
-            let n = mustFitAtLeastN + (mustTakeOverflow ? 1 : 0)
-
-            var j = i
-            for area in splitN(dynamic[i], n: n, axis: dynamicAxis[i]) {
-                if j < remaining.count {
-                    fit(remaining[j].window, rect: project(area, wa))
-                }
-                j += dynamic.count
-            }
-        }
-    }
-
     /// Moves a window such that its NW edge aligns with the next grid line.
     func moveWindow(_ target: AXUIElement, gridSize: GridSize, dir: CardinalDirection) {
         let strategy: SnapStrategy = (dir == .west || dir == .north) ? .shrink : .grow
@@ -504,65 +416,6 @@ final class WindowManager {
             anchor: GridOffset(col: Int(alignedNwX), row: Int(alignedNwY)),
             target: GridOffset(col: Int(alignedSeX) - 1, row: Int(alignedSeY) - 1)
         )
-    }
-
-    // MARK: - GridSpec Processing
-
-    func gridSpecToAreas(
-        _ spec: GridSpec,
-        x: Double = 0, y: Double = 0,
-        w: Double = 1, h: Double = 1
-    ) -> GridSpecAreas {
-        var regularCells: [Rectangle] = []
-        var dynamicCells: [Rectangle] = []
-        var dynamicAxes: [Axis] = []
-        let totalWeight = spec.cells.reduce(0) { $0 + $1.weight }
-
-        var cx = x, cy = y
-        for cell in spec.cells {
-            let ratio = Double(cell.weight) / Double(totalWeight)
-            let width = spec.mode == .cols ? w * ratio : w
-            let height = spec.mode == .rows ? h * ratio : h
-            let axis: Axis = spec.mode == .cols ? .x : .y
-
-            if let child = cell.child {
-                let (dedicated, dynamic, childAxes) = gridSpecToAreas(child, x: cx, y: cy, w: width, h: height)
-                regularCells.append(contentsOf: dedicated)
-                dynamicCells.append(contentsOf: dynamic)
-                dynamicAxes.append(contentsOf: childAxes)
-            } else if cell.dynamic {
-                dynamicCells.append(Rectangle(x: cx, y: cy, width: width, height: height))
-                dynamicAxes.append(axis)
-            } else {
-                regularCells.append(Rectangle(x: cx, y: cy, width: width, height: height))
-            }
-
-            if spec.mode == .cols { cx += width }
-            if spec.mode == .rows { cy += height }
-        }
-
-        return (regularCells, dynamicCells, dynamicAxes)
-    }
-
-    func splitN(_ rect: Rectangle, n: Int, axis: Axis) -> [Rectangle] {
-        guard n > 0 else { return [] }
-        var result: [Rectangle] = []
-        var cx = rect.x, cy = rect.y
-        var i = n
-
-        while i > 0 {
-            result.append(Rectangle(
-                x: cx, y: cy,
-                width: axis == .x ? rect.width / Double(n) : rect.width,
-                height: axis == .y ? rect.height / Double(n) : rect.height
-            ))
-
-            if axis == .x { cx += rect.width / Double(n) }
-            if axis == .y { cy += rect.height / Double(n) }
-            i -= 1
-        }
-
-        return result
     }
 
     // MARK: - Autogrow Tree Algorithm

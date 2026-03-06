@@ -41,6 +41,7 @@ targets:
       - target: mTile
     settings:
       base:
+        GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.mtile.tests
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/mTile.app/Contents/MacOS/mTile"
         BUNDLE_LOADER: "$(TEST_HOST)"

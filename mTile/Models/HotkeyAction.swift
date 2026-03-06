@@ -10,13 +10,6 @@ enum AdjustMode: String {
     case extend, shrink
 }
 
-/// Autotile layout type.
-enum AutoTileLayout: Equatable {
-    case main
-    case mainInverted
-    case cols(Int)
-}
-
 /// A data structure that comprises a discriminative action and associated meta information.
 /// Replaces the TypeScript discriminated union HotkeyAction.
 enum HotkeyAction {
@@ -52,7 +45,4 @@ enum HotkeyAction {
 
     /// Move the window to the neighbouring screen.
     case relocate
-
-    /// Autotile all windows on a screen according to the desired layout.
-    case autotile(AutoTileLayout)
 }

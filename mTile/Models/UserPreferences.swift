@@ -4,14 +4,12 @@ import SwiftUI
 /// Observable settings model backed by UserDefaults.
 @Observable
 final class UserPreferences {
+    static let shared = UserPreferences()
+
     // MARK: - Boolean Settings
 
     var autoMaximize: Bool {
         didSet { UserDefaults.standard.set(autoMaximize, forKey: "autoMaximize") }
-    }
-
-    var globalAutoTiling: Bool {
-        didSet { UserDefaults.standard.set(globalAutoTiling, forKey: "globalAutoTiling") }
     }
 
     var globalPresets: Bool {
@@ -74,10 +72,6 @@ final class UserPreferences {
         didSet { UserDefaults.standard.set(gridSizes, forKey: "gridSizes") }
     }
 
-    var autotileMainWindowRatios: String {
-        didSet { UserDefaults.standard.set(autotileMainWindowRatios, forKey: "autotileMainWindowRatios") }
-    }
-
     // MARK: - Resize Presets (1-30)
 
     private(set) var resizePresets: [String]
@@ -91,21 +85,6 @@ final class UserPreferences {
         guard index >= 1 && index <= 30 else { return }
         resizePresets[index - 1] = value
         UserDefaults.standard.set(value, forKey: "resize\(index)")
-    }
-
-    // MARK: - Autotile GridSpecs (1-10)
-
-    private(set) var autotileGridSpecs: [String]
-
-    func autotileGridSpec(_ index: Int) -> String {
-        guard index >= 1 && index <= 10 else { return "" }
-        return autotileGridSpecs[index - 1]
-    }
-
-    func setAutotileGridSpec(_ index: Int, value: String) {
-        guard index >= 1 && index <= 10 else { return }
-        autotileGridSpecs[index - 1] = value
-        UserDefaults.standard.set(value, forKey: "autotileGridSpec\(index)")
     }
 
     // MARK: - Computed Properties
@@ -136,7 +115,6 @@ final class UserPreferences {
         // Register defaults
         let defaultValues: [String: Any] = [
             "autoMaximize": false,
-            "globalAutoTiling": false,
             "globalPresets": true,
             "moveResizeEnabled": true,
             "targetPresetsToMonitorOfMouse": false,
@@ -151,7 +129,6 @@ final class UserPreferences {
             "insetsSecondaryLeft": 0,
             "windowSpacing": 0,
             "gridSizes": "8x6, 6x4, 4x4",
-            "autotileMainWindowRatios": "0.5,0.6,0.65,0.7",
         ]
 
         // Default resize presets matching mTile defaults
@@ -172,15 +149,11 @@ final class UserPreferences {
             let key = "resize\(i)"
             mutableDefaults[key] = i <= defaultResizePresets.count ? defaultResizePresets[i - 1] : ""
         }
-        for i in 1...10 {
-            mutableDefaults["autotileGridSpec\(i)"] = ""
-        }
 
         defaults.register(defaults: mutableDefaults)
 
         // Load values
         self.autoMaximize = defaults.bool(forKey: "autoMaximize")
-        self.globalAutoTiling = defaults.bool(forKey: "globalAutoTiling")
         self.globalPresets = defaults.bool(forKey: "globalPresets")
         self.moveResizeEnabled = defaults.bool(forKey: "moveResizeEnabled")
         self.targetPresetsToMonitorOfMouse = defaults.bool(forKey: "targetPresetsToMonitorOfMouse")
@@ -197,9 +170,7 @@ final class UserPreferences {
         self.windowSpacing = defaults.integer(forKey: "windowSpacing")
 
         self.gridSizes = defaults.string(forKey: "gridSizes") ?? "8x6, 6x4, 4x4"
-        self.autotileMainWindowRatios = defaults.string(forKey: "autotileMainWindowRatios") ?? "0.5,0.6,0.65,0.7"
 
         self.resizePresets = (1...30).map { defaults.string(forKey: "resize\($0)") ?? "" }
-        self.autotileGridSpecs = (1...10).map { defaults.string(forKey: "autotileGridSpec\($0)") ?? "" }
     }
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var preferences = UserPreferences()
+    @State private var preferences = UserPreferences.shared
 
     var body: some View {
         TabView {
@@ -12,10 +12,7 @@ struct SettingsView: View {
                 .tabItem { Label("Insets", systemImage: "arrow.up.left.and.arrow.down.right") }
 
             PresetSettingsTab(preferences: preferences)
-                .tabItem { Label("Presets", systemImage: "grid") }
-
-            AutotileSettingsTab(preferences: preferences)
-                .tabItem { Label("Autotile", systemImage: "rectangle.split.3x3") }
+                .tabItem { Label("Presets (Advanced)", systemImage: "grid") }
 
             ShortcutsSettingsTab()
                 .tabItem { Label("Shortcuts", systemImage: "keyboard") }
@@ -52,10 +49,12 @@ struct GeneralSettingsTab: View {
                     TextField("", text: $preferences.gridSizes)
                         .frame(minWidth: 200)
                 }
+                Text("These are the grid buttons shown in the overlay and apply immediately.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             Section("Global Shortcuts") {
-                Toggle("Enable autotile shortcuts globally", isOn: $preferences.globalAutoTiling)
                 Toggle("Enable preset shortcuts globally", isOn: $preferences.globalPresets)
                 Toggle("Enable move/resize shortcuts globally", isOn: $preferences.moveResizeEnabled)
             }
@@ -69,6 +68,15 @@ struct GeneralSettingsTab: View {
                 preferences.launchAtLogin = LoginItemService.shared.isEnabled
             }
         }
+        .onChange(of: preferences.gridSizes) { _, _ in
+            AppCoordinator.shared?.refreshGridPresetsFromSettings()
+        }
+        .onChange(of: preferences.globalPresets) { _, _ in
+            AppCoordinator.shared?.refreshGlobalShortcutGroupsFromSettings()
+        }
+        .onChange(of: preferences.moveResizeEnabled) { _, _ in
+            AppCoordinator.shared?.refreshGlobalShortcutGroupsFromSettings()
+        }
     }
 }
 
@@ -79,6 +87,12 @@ struct InsetSettingsTab: View {
 
     var body: some View {
         Form {
+            Section("About Insets") {
+                Text("Insets reserve space on monitor edges so tiled windows stay away from menu bars, notches, docks, or your own desired margins.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section("Primary Monitor Insets") {
                 insetFields(
                     top: $preferences.insetsPrimaryTop,
@@ -147,6 +161,10 @@ struct PresetSettingsTab: View {
                 Text("Resize Presets")
                     .font(.headline)
 
+                Text("Advanced: optional. You only need this if you bind preset shortcuts.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
                 Text("Format: GridSize Selection [, Selection | GridSize Selection ...]")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -171,48 +189,6 @@ struct PresetSettingsTab: View {
             }
             .padding()
         }
-    }
-}
-
-// MARK: - Autotile Tab
-
-struct AutotileSettingsTab: View {
-    @Bindable var preferences: UserPreferences
-
-    var body: some View {
-        Form {
-            Section("Main Window Ratios") {
-                HStack {
-                    Text("Ratios (comma-separated):")
-                    TextField("", text: $preferences.autotileMainWindowRatios)
-                        .frame(minWidth: 200)
-                }
-                Text("e.g. 0.5,0.6,0.65,0.7 — cycles through main/side ratios")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Section("GridSpec Presets") {
-                Text("DSL format: cols(weight, weight:rows(w,wd,w), ...)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
-                ForEach(1...10, id: \.self) { index in
-                    HStack {
-                        Text("Layout \(index):")
-                            .frame(width: 80, alignment: .trailing)
-
-                        TextField("e.g. cols(1, 1)", text: Binding(
-                            get: { preferences.autotileGridSpec(index) },
-                            set: { preferences.setAutotileGridSpec(index, value: $0) }
-                        ))
-                        .font(.system(.body, design: .monospaced))
-                    }
-                }
-            }
-        }
-        .formStyle(.grouped)
-        .padding()
     }
 }
 

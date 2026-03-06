@@ -5,7 +5,6 @@ import SwiftUI
 /// Events emitted by the overlay system.
 enum OverlayEvent {
     case selection(monitorIdx: Int, gridSize: GridSize, selection: GridSelection)
-    case autotile(layout: AutoTileLayout)
     case visibility(visible: Bool)
 }
 
@@ -28,6 +27,10 @@ final class OverlayController {
     private(set) var gridSize: GridSize
     private var presetIndex: Int = 0
 
+    var isVisible: Bool {
+        overlays.contains { $0.isVisible }
+    }
+
     /// The window that was focused before the overlay was shown.
     /// This is the actual target for window operations.
     private(set) var targetWindow: AXUIElement?
@@ -46,8 +49,9 @@ final class OverlayController {
         self.previewWindow = PreviewWindow()
 
         let gridSizeConf = preferences.gridSizes
-        self.presets = GridSizeListParser(input: gridSizeConf).parse() ?? DefaultGridSizes
-        self.gridSize = presets.first ?? DefaultGridSizes[0]
+        let parsedPresets = GridSizeListParser(input: gridSizeConf).parse() ?? []
+        self.presets = parsedPresets.isEmpty ? DefaultGridSizes : parsedPresets
+        self.gridSize = self.presets.first ?? DefaultGridSizes[0]
 
         renderOverlays()
     }
@@ -161,6 +165,8 @@ final class OverlayController {
     }
 
     func iteratePreset() {
+        guard !presets.isEmpty else { return }
+
         presetIndex = (presetIndex + 1) % presets.count
         gridSize = presets[presetIndex]
 
@@ -174,7 +180,7 @@ final class OverlayController {
     }
 
     func updatePresets(_ newPresets: [GridSize]) {
-        presets = newPresets
+        presets = newPresets.isEmpty ? DefaultGridSizes : newPresets
         presetIndex = 0
         if let first = presets.first {
             gridSize = first
@@ -358,9 +364,6 @@ final class OverlayController {
                 } else if interactionState.anchor == nil {
                     self.previewWindow.previewArea = nil
                 }
-            },
-            onAutotile: { [weak self] layout in
-                self?.dispatch(.autotile(layout: layout))
             },
             onClose: { [weak self] in
                 self?.toggleOverlays(hide: true)

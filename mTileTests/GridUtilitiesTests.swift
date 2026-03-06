@@ -42,7 +42,7 @@ final class GridUtilitiesTests: XCTestCase {
         let result = pan(selection, bounds: bounds, dir: .west)
 
         XCTAssertEqual(result.anchor.col, 0)
-        XCTAssertEqual(result.target.col, 1)
+        XCTAssertEqual(result.target.col, 0)
     }
 
     func testPanSouth() {

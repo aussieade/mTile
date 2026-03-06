@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Main overlay view combining title bar, grid, preset bar, and action bar.
+/// Main overlay view combining title bar, grid, and preset bar.
 struct OverlayView: View {
     let title: String
     let presets: [GridSize]
@@ -10,7 +10,6 @@ struct OverlayView: View {
 
     let onSelectionComplete: ((GridSelection) -> Void)?
     var onHoverChanged: ((GridOffset?) -> Void)?
-    let onAutotile: ((AutoTileLayout) -> Void)?
     let onClose: (() -> Void)?
 
     var body: some View {
@@ -30,9 +29,6 @@ struct OverlayView: View {
 
             // Preset Bar
             presetBar
-
-            // Action Bar
-            actionBar
         }
         .padding(12)
         .background(
@@ -89,30 +85,6 @@ struct OverlayView: View {
         }
     }
 
-    private var actionBar: some View {
-        HStack(spacing: 8) {
-            Button {
-                onAutotile?(.main)
-            } label: {
-                Image(systemName: "rectangle.split.2x1")
-                    .font(.system(size: 12))
-            }
-            .buttonStyle(.borderless)
-            .help("Autotile: Main + List")
-
-            Button {
-                onAutotile?(.mainInverted)
-            } label: {
-                Image(systemName: "rectangle.split.2x1")
-                    .font(.system(size: 12))
-                    .scaleEffect(x: -1)
-            }
-            .buttonStyle(.borderless)
-            .help("Autotile: List + Main")
-
-            Spacer()
-        }
-    }
 }
 
 /// NSVisualEffectView wrapper for SwiftUI.

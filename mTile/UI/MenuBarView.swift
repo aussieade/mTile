@@ -1,6 +1,9 @@
+import AppKit
 import SwiftUI
 
 struct MenuBarView: View {
+    @Environment(\.openSettings) private var openSettings
+
     var body: some View {
         Button("Toggle Overlay") {
             AppCoordinator.shared?.onAction(.toggle)
@@ -13,19 +16,10 @@ struct MenuBarView: View {
             AppCoordinator.shared?.onAction(.grow)
         }
 
-        Menu("Autotile") {
-            Button("Main Layout") {
-                AppCoordinator.shared?.onAction(.autotile(.main))
-            }
-            Button("Main Inverted") {
-                AppCoordinator.shared?.onAction(.autotile(.mainInverted))
-            }
-        }
-
         Divider()
 
-        SettingsLink {
-            Text("Settings...")
+        Button("Settings...") {
+            openSettingsWindow()
         }
 
         Divider()
@@ -34,5 +28,17 @@ struct MenuBarView: View {
             NSApplication.shared.terminate(nil)
         }
         .keyboardShortcut("q")
+    }
+
+    private func openSettingsWindow() {
+        NSApp.activate(ignoringOtherApps: true)
+        openSettings()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            for window in NSApp.windows where !window.isKind(of: NSPanel.self) {
+                window.makeKeyAndOrderFront(nil)
+                window.orderFrontRegardless()
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@ typealias PresetIndex = (index: Int, subindex: Int)
 /// Top-level orchestrator for the mTile macOS app.
 ///
 /// Port of App.ts. Routes HotkeyAction events to WindowManager and
-/// OverlayController, manages preset cycling, autotile layout resolution.
+/// OverlayController, manages preset cycling.
 final class AppCoordinator {
     static var shared: AppCoordinator?
 
@@ -18,14 +18,12 @@ final class AppCoordinator {
     private let hotkeyManager: HotkeyManager
     private let lastPresetIndex: VolatileStorage<PresetIndex>
 
-    // Autotile layout cache
-    private var gridSpecs: AutoTileLayoutCache
-
     /// Global keybinding groups that are always active.
     private var globalKeyBindingGroups: KeyBindingGroup
+    private var overlayVisible = false
 
     init() {
-        self.preferences = UserPreferences()
+        self.preferences = UserPreferences.shared
         self.accessibilityService = AccessibilityService()
         self.displayService = DisplayService()
         self.windowManager = WindowManager(
@@ -39,17 +37,12 @@ final class AppCoordinator {
         )
         self.hotkeyManager = HotkeyManager(preferences: preferences)
         self.lastPresetIndex = VolatileStorage<PresetIndex>(lifetime: 2.0)
-        self.gridSpecs = AutoTileLayoutCache(preferences: preferences)
 
         // Keep OS login item registration in sync with persisted preference.
         LoginItemService.shared.synchronize(enabled: preferences.launchAtLogin)
 
         // Determine global keybinding groups from preferences
-        var groups: KeyBindingGroup = .global
-        if preferences.globalAutoTiling { groups.insert(.autotile) }
-        if preferences.globalPresets { groups.insert(.preset) }
-        if preferences.moveResizeEnabled { groups.insert(.action) }
-        self.globalKeyBindingGroups = groups
+        self.globalKeyBindingGroups = Self.computeGlobalKeyBindingGroups(preferences: preferences)
 
         // Wire up event handlers
         overlayController.subscribe { [weak self] event in
@@ -86,43 +79,35 @@ final class AppCoordinator {
         return presets[nextSubindex]
     }
 
-    private func getAutotilePreset(_ layout: AutoTileLayout) -> GridSpec? {
-        let specs = gridSpecs.specs(for: layout)
-        guard !specs.isEmpty else { return nil }
-
-        let index: Int
-        switch layout {
-        case .main: index = 100
-        case .mainInverted: index = 101
-        case .cols(let n): index = 102 + n
-        }
-
-        let (lastIndex, lastSubindex) = lastPresetIndex.store ?? (-1, -1)
-        if lastIndex != index {
-            lastPresetIndex.store = (index, 0)
-            return specs[0]
-        }
-
-        let nextSubindex = (lastSubindex + 1) % specs.count
-        lastPresetIndex.store = (index, nextSubindex)
-        return specs[nextSubindex]
-    }
-
     // MARK: - Event Handlers
 
     private func onOverlayEvent(_ event: OverlayEvent) {
         switch event {
         case .selection:
             onUserAction(.confirm)
-        case .autotile(let layout):
-            onUserAction(.autotile(layout))
         case .visibility(let visible):
+            overlayVisible = visible
             hotkeyManager.setListeningGroups(
                 visible
                     ? globalKeyBindingGroups.union(.overlayDefaults)
                     : globalKeyBindingGroups
             )
         }
+    }
+
+    func refreshGridPresetsFromSettings() {
+        guard let parsed = GridSizeListParser(input: preferences.gridSizes).parse() else {
+            return
+        }
+        overlayController.updatePresets(parsed)
+    }
+
+    func refreshGlobalShortcutGroupsFromSettings() {
+        globalKeyBindingGroups = Self.computeGlobalKeyBindingGroups(preferences: preferences)
+        let active = overlayVisible
+            ? globalKeyBindingGroups.union(.overlayDefaults)
+            : globalKeyBindingGroups
+        hotkeyManager.setListeningGroups(active)
     }
 
     /// Public entry point for triggering actions (used by MenuBarView).
@@ -209,11 +194,6 @@ final class AppCoordinator {
         case .relocate:
             wm.moveToMonitor(window)
 
-        case .autotile(let layout):
-            if let spec = getAutotilePreset(layout) {
-                wm.autotile(spec, monitorIdx: monitorIdx)
-            }
-
         default:
             break
         }
@@ -244,49 +224,11 @@ final class AppCoordinator {
     }
 }
 
-// MARK: - Autotile Layout Cache
-
-/// Caches autotile layout specs, analogous to AutoTileLayouts() in grid.ts.
-final class AutoTileLayoutCache {
-    private let preferences: UserPreferences
-
-    init(preferences: UserPreferences) {
-        self.preferences = preferences
-    }
-
-    func specs(for layout: AutoTileLayout) -> [GridSpec] {
-        switch layout {
-        case .main:
-            return mainSpecs(inverted: false)
-        case .mainInverted:
-            return mainSpecs(inverted: true)
-        case .cols(let n):
-            let config = preferences.autotileGridSpec(n)
-            guard !config.isEmpty,
-                  let spec = GridSpecParser(input: config).parse() else {
-                return []
-            }
-            return [spec]
-        }
-    }
-
-    private func mainSpecs(inverted: Bool) -> [GridSpec] {
-        let fractionScaleFactor = 1024
-        let ratios = preferences.autotileMainWindowRatios
-            .split(separator: ",")
-            .compactMap { Double(String($0).trimmingCharacters(in: .whitespaces)) }
-            .filter { !$0.isNaN }
-            .map { Int(clamp($0, min: 0, max: 1) * Double(fractionScaleFactor)) }
-            .map { ($0, fractionScaleFactor - $0) }
-
-        return ratios.compactMap { (main, minor) in
-            let spec: String
-            if inverted {
-                spec = "cols(\(minor):rows(1d), \(main))"
-            } else {
-                spec = "cols(\(main), \(minor):rows(1d))"
-            }
-            return GridSpecParser(input: spec).parse()
-        }
+private extension AppCoordinator {
+    static func computeGlobalKeyBindingGroups(preferences: UserPreferences) -> KeyBindingGroup {
+        var groups: KeyBindingGroup = .global
+        if preferences.globalPresets { groups.insert(.preset) }
+        if preferences.moveResizeEnabled { groups.insert(.action) }
+        return groups
     }
 }
