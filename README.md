@@ -4,9 +4,7 @@ A mostly vibecoded port of [gTile](https://github.com/gTile/gTile) to macOS. gTi
 
 This brings the core grid-tiling workflow of gTile to macOS as a native Swift app.
 
-[![mTile demo screenshot](docs/demo-screenshot.png)](https://raw.githubusercontent.com/protortyp/gTile-macos/develop/docs/demo.mp4)
-
-<sub>Click the screenshot to open the short demo video (MP4).</sub>
+[![mTile demo screenshot](docs/demo.optimized.small.gif)](https://raw.githubusercontent.com/protortyp/gTile-macos/develop/docs/demo.mp4)
 
 ## Features
 
