@@ -2,7 +2,7 @@
 
 A mostly vibecoded port of [gTile](https://github.com/gTile/gTile) to macOS. gTile is my favorite window tiler on Ubuntu/GNOME and I missed it on macOS, so here we are.
 
-This brings the core functionality of gTile to macOS as a native Swift app - grid-based window tiling with easy shortcuts from your menu bar.
+This brings the core grid-tiling workflow of gTile to macOS as a native Swift app.
 
 <!-- TODO: Add demo video -->
 
@@ -13,16 +13,19 @@ This brings the core functionality of gTile to macOS as a native Swift app - gri
 - Arrow keys to navigate, Enter to select, Shift+Arrow to expand selection
 - Option+Arrow to shift the entire selection around
 - Configurable grid sizes (e.g. 8x6, 6x4, 4x4)
-- Resize presets and autotile layouts
+- Autotile actions (Main and Main-Inverted layouts)
 - Window spacing and monitor insets
+- Launch at login toggle in Settings
 - Lives in your menu bar, stays out of the way
+
+Current limitation:
+- Shortcut recording/customization UI is not implemented yet (the Shortcuts tab is currently informational).
 
 ## Install
 
 Grab the DMG from the [releases page](https://github.com/protortyp/gTile-macos/releases), or build it yourself:
 
 ```sh
-xcodegen generate
 ./scripts/build-dmg.sh
 ```
 
