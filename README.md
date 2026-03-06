@@ -4,7 +4,7 @@ A mostly vibecoded port of [gTile](https://github.com/gTile/gTile) to macOS. gTi
 
 This brings the core grid-tiling workflow of gTile to macOS as a native Swift app.
 
-<!-- TODO: Add demo video -->
+<video src="docs/demo.mp4" controls width="100%"></video>
 
 ## Features
 
@@ -19,6 +19,7 @@ This brings the core grid-tiling workflow of gTile to macOS as a native Swift ap
 - Lives in your menu bar, stays out of the way
 
 Current limitation:
+
 - Shortcut recording/customization UI is not implemented yet (the Shortcuts tab is currently informational).
 
 ## Install
@@ -32,6 +33,7 @@ Grab the DMG from the [releases page](https://github.com/protortyp/gTile-macos/r
 You'll need to grant accessibility permissions when prompted.
 
 To start mTile automatically on login:
+
 - Open `mTile -> Settings -> General` and enable `Launch mTile at login`, or
 - Use macOS `System Settings -> General -> Login Items`.
 
