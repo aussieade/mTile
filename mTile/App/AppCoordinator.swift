@@ -56,6 +56,9 @@ final class AppCoordinator {
         // Monitor workspace notifications for focus changes
         setupWorkspaceObservers()
 
+        // Log the initial display configuration for multi-monitor diagnostics.
+        displayService.logDisplayConfiguration("startup")
+
         AppCoordinator.shared = self
     }
 
@@ -139,7 +142,16 @@ final class AppCoordinator {
         let validated = om.validatedTargetWindow()
         let fallback = wm.accessibilityService.focusedWindowExcludingSelf()
         guard let window = validated ?? fallback else {
-            print("mTile: no target window available for action \(action)")
+            // Distinguish "no window" from a lost Accessibility grant. Ad-hoc
+            // signed rebuilds frequently leave the TCC entry checked while the
+            // grant no longer applies to the new binary, which makes every AX
+            // read (window capture) return nil and tiling silently do nothing.
+            if !AccessibilityService.isTrusted {
+                print("mTile: Accessibility not granted — tiling disabled. Re-grant mTile in System Settings > Privacy & Security > Accessibility (remove and re-add the app).")
+                AccessibilityService.requestPermission()
+            } else {
+                print("mTile: no target window available for action \(action) (Accessibility is trusted; the front window may not expose an AX focused window)")
+            }
             return
         }
 
@@ -219,6 +231,7 @@ final class AppCoordinator {
             queue: .main
         ) { [weak self] _ in
             // Rebuild overlays when monitor config changes
+            self?.displayService.logDisplayConfiguration("screen-change")
             self?.overlayController.toggleOverlays(hide: true)
         }
     }

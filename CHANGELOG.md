@@ -21,6 +21,10 @@
 ### Added
 - Display-configuration diagnostics logged at startup and on screen changes to aid
   multi-monitor troubleshooting.
+- When a tiling action finds no target window, mTile now re-checks the Accessibility grant and,
+  if it is missing, logs a clear message and re-prompts, instead of silently doing nothing.
+  (Ad-hoc signed rebuilds can leave the Accessibility entry checked while the grant no longer
+  applies to the new binary; re-adding the app in System Settings restores it.)
 
 ## [v1.6.0] - 2026-03-06
 
