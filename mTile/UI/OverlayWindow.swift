@@ -53,6 +53,28 @@ final class OverlayWindow: NSPanel {
     override func cancelOperation(_ sender: Any?) {
         onEscape?()
     }
+
+    override func sendEvent(_ event: NSEvent) {
+        // Intercept the overlay's keys at the window entry point, before the
+        // event reaches the SwiftUI hosting view (first responder). SwiftUI
+        // swallows a plain Return, so relying on keyDown bubbling never delivers
+        // it to onEnter; handling it here does. Arrows/Escape are routed here too
+        // to keep all overlay keys on one reliable path.
+        if event.type == .keyDown {
+            let opt = event.modifierFlags.contains(.option)
+            let shift = event.modifierFlags.contains(.shift)
+            switch event.keyCode {
+            case 53:     onEscape?();                return
+            case 123:    onArrowKey?(0, opt, shift); return
+            case 124:    onArrowKey?(1, opt, shift); return
+            case 125:    onArrowKey?(2, opt, shift); return
+            case 126:    onArrowKey?(3, opt, shift); return
+            case 36, 76: onEnter?();                 return  // Return / keypad Enter
+            default:     break
+            }
+        }
+        super.sendEvent(event)
+    }
 }
 
 /// Creates and manages an overlay window with SwiftUI content.

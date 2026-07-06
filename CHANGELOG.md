@@ -10,6 +10,13 @@
 - Windows on a shared monitor seam are no longer misattributed to the primary display; monitor
   attribution now uses largest-overlap (falling back to nearest screen) rather than a
   center-point test that defaulted to monitor 0.
+- Keyboard focus now goes to the grid overlay on the target window's monitor, instead of always
+  the primary monitor, so arrow keys and the preview respond on the monitor you are on.
+- Enter now confirms the keyboard selection in a single press (matching the documented "Enter
+  to select" behaviour) and tiles the window on the correct monitor, instead of requiring two
+  presses or silently doing nothing. Overlay key events (Enter, arrows, Escape) are now
+  intercepted at the panel's `sendEvent`, so Return reaches the confirm handler instead of being
+  swallowed by the SwiftUI content view before it can bubble up.
 
 ### Added
 - Display-configuration diagnostics logged at startup and on screen changes to aid

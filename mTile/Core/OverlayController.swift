@@ -130,14 +130,29 @@ final class OverlayController {
 
         syncInProgress = true
         overlays.forEach { $0.show() }
-        // Make the first overlay key so it receives keyboard events
-        overlays.first?.window.makeKey()
+        // Make the overlay on the target window's monitor key so keyboard input
+        // (arrows/Enter) and the preview appear on the monitor the user is on.
+        let keyIndex = targetWindow.map {
+            windowManager.accessibilityService.windowMonitorIndex($0)
+        } ?? windowManager.pointerMonitorIndex
+        if keyIndex < overlays.count {
+            overlays[keyIndex].window.makeKey()
+        } else {
+            overlays.first?.window.makeKey()
+        }
         syncInProgress = false
         dispatch(.visibility(visible: true))
     }
 
     func setSelection(_ selection: GridSelection?, monitorIdx: Int) {
         guard monitorIdx < overlayStates.count else { return }
+
+        // Keep activeMonitorIndex correct even when the selection value is
+        // unchanged, so a subsequent .confirm reads the right monitor's
+        // selection instead of a stale index.
+        if selection != nil {
+            activeMonitorIndex = monitorIdx
+        }
 
         // Avoid rebuilding overlay content when nothing semantically changed.
         if overlayStates[monitorIdx].selection == selection {
@@ -147,7 +162,6 @@ final class OverlayController {
         overlayStates[monitorIdx].selection = selection
 
         if let selection = selection {
-            activeMonitorIndex = monitorIdx
             let area = windowManager.selectionToArea(
                 selection, gridSize: gridSize, monitorIdx: monitorIdx, preview: true)
             previewWindow.previewArea = area
@@ -272,26 +286,26 @@ final class OverlayController {
                 self.previewWindow.previewArea = area
             }
 
-            // Wire Enter key — same as clicking the current keyboard cursor
+            // Wire Enter key — confirms the current keyboard selection in a
+            // single press (README: "Enter to select"). A plain-arrow cursor
+            // confirms a single cell; a Shift+Arrow range (anchor set) confirms
+            // the range. Enter before any navigation does nothing.
             controller.window.onEnter = { [weak self, weak interactionState] in
                 guard let self = self, let state = interactionState else { return }
-                let cursor = state.keyboardCursor ?? self.initialKeyboardCursor(for: index)
-                if let currentAnchor = state.anchor {
-                    // Second Enter: confirm selection
-                    let selection = GridSelection(anchor: currentAnchor, target: cursor)
-                    state.anchor = nil
-                    state.keyboardCursor = nil
-                    // Set the selection on the overlay state so onUserAction(.confirm) can read it
-                    self.setSelection(selection, monitorIdx: index)
-                    self.dispatch(.selection(
-                        monitorIdx: index,
-                        gridSize: self.gridSize,
-                        selection: selection
-                    ))
-                } else {
-                    // First Enter: set anchor
-                    state.anchor = cursor
-                }
+                // Keyboard cursor takes priority; fall back to mouse hover so a
+                // hover-then-Enter also confirms. Nothing selected yet -> no-op.
+                guard let cursor = state.keyboardCursor ?? state.hoverTile else { return }
+                let anchor = state.anchor ?? cursor
+                let selection = GridSelection(anchor: anchor, target: cursor)
+                state.anchor = nil
+                state.keyboardCursor = nil
+                // Set the selection on the overlay state so onUserAction(.confirm) can read it
+                self.setSelection(selection, monitorIdx: index)
+                self.dispatch(.selection(
+                    monitorIdx: index,
+                    gridSize: self.gridSize,
+                    selection: selection
+                ))
             }
 
             overlays.append(controller)
