@@ -159,18 +159,15 @@ final class AccessibilityService {
     }
 
     /// Returns the monitor index that a window is primarily on.
+    ///
+    /// Attributes the window to the screen it overlaps most (by intersection
+    /// area). This is robust on the shared seam between two stacked/side-by-side
+    /// monitors and for windows straddling two displays, unlike a center-point
+    /// containment test that silently falls back to the primary.
     func windowMonitorIndex(_ window: AXUIElement) -> Int {
         guard let frame = windowFrame(window) else { return 0 }
-        let windowCenter = CGPoint(x: frame.x + frame.width / 2, y: frame.y + frame.height / 2)
-
-        for (index, screen) in NSScreen.screens.enumerated() {
-            let screenFrame = DisplayService.screenFrameInAXCoordinates(screen)
-            if screenFrame.contains(windowCenter) {
-                return index
-            }
-        }
-
-        return 0
+        let screenRects = NSScreen.screens.map { DisplayService.screenFrameInAXCoordinates($0) }
+        return DisplayService.monitorIndex(forFrame: frame, screenRects: screenRects)
     }
 
     /// Returns true if a window is minimized.

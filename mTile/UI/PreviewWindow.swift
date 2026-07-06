@@ -47,8 +47,7 @@ final class PreviewWindow: NSPanel {
             if previewArea == oldValue { return }
 
             if let area = previewArea {
-                let primaryHeight = NSScreen.screens.first?.frame.height ?? 0
-                let nsY = primaryHeight - area.y - area.height
+                let nsY = DisplayService.cocoaOriginY(axY: area.y, height: area.height)
 
                 let frame = NSRect(
                     x: area.x, y: nsY,

@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Multi-monitor tiling when a display is stacked above the primary. Coordinate conversion now
+  pivots on the actual origin display (the one at Cocoa origin `(0,0)`) via a single shared
+  converter, instead of assuming `NSScreen.screens.first` is primary, so arrangements that
+  produce negative AX Y coordinates map correctly.
+- Windows on a shared monitor seam are no longer misattributed to the primary display; monitor
+  attribution now uses largest-overlap (falling back to nearest screen) rather than a
+  center-point test that defaulted to monitor 0.
+
+### Added
+- Display-configuration diagnostics logged at startup and on screen changes to aid
+  multi-monitor troubleshooting.
+
 ## [v1.6.0] - 2026-03-06
 
 ### Added

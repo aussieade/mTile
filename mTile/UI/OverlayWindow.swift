@@ -84,8 +84,7 @@ final class OverlayWindowController {
     }
 
     func placeAt(x: Double, y: Double) {
-        let primaryHeight = NSScreen.screens.first?.frame.height ?? 0
-        let nsY = primaryHeight - y - Double(window.frame.height)
+        let nsY = DisplayService.cocoaOriginY(axY: y, height: Double(window.frame.height))
         window.setFrameOrigin(NSPoint(x: x, y: nsY))
     }
 
